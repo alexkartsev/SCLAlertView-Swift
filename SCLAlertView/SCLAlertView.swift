@@ -207,7 +207,7 @@ open class SCLAlertView: UIViewController {
     // UI Options
     open var iconTintColor: UIColor?
     open var customSubview : UIView?
-    
+    open var hideSubTitle = false
 
     
     // Members declaration
@@ -332,6 +332,9 @@ open class SCLAlertView: UIViewController {
             }
         }
         
+        if hideSubTitle {
+            viewTextHeight = 0
+        }
         let windowHeight = consumedHeight + viewTextHeight
         // Set frames
         var x = (sz.width - appearance.kWindowWidth) / 2
@@ -788,7 +791,13 @@ open class SCLAlertView: UIViewController {
                 UIView.animate(withDuration: animationDuration, animations: {
                     self.view.alpha = 1.0
                     self.baseView.center = rv.center
-                })
+                }, completion: { finished in
+                    if let customSubviews = self.customSubview?.subviews {
+                        for view in customSubviews where view.isKind(of: UITextField.self) {
+                            view.becomeFirstResponder()
+                            break
+                        }
+                    }})
         })
     }
     
